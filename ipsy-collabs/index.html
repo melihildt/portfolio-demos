@@ -28,6 +28,8 @@
   #panel select{width:100%;margin-bottom:6px;background:#2a251d;color:var(--ink);border:1px solid rgba(255,255,255,.15);border-radius:6px;padding:4px}
   #panel b{display:block;margin-bottom:10px;font-weight:600}
   #panel small{color:var(--dim)}
+  html.embed #ui,html.embed #panel{display:none}
+  html.embed #stage{cursor:default}
 </style>
 </head>
 <body>
@@ -59,6 +61,9 @@
 </div>
 
 <script>
+// Embed mode: ?embed in the URL, or running inside an iframe (e.g. Framer's Embed) -> no player bar or tweak panel
+try{ if(new URLSearchParams(location.search).has('embed') || self!==top) document.documentElement.classList.add('embed'); }
+catch(e){ document.documentElement.classList.add('embed'); }
 const BASE = "https://cdn.jsdelivr.net/gh/melihildt/portfolio-demo-assets@fb5fb62898370793d5f61e2569fc54d67b9b7f43/ipsy-collabs/";
 const DATA = {
  "items": [
@@ -192,8 +197,9 @@ $('play').onclick = e=>{e.stopPropagation(); setPlay(!playing)};
 $('prev').onclick = e=>{e.stopPropagation(); startMove(-1)};
 $('next').onclick = e=>{e.stopPropagation(); startMove(1)};
 $('gear').onclick = e=>{e.stopPropagation(); $('panel').classList.toggle('open')};
-stage.onclick = ()=>startMove(1);
+stage.onclick = ()=>{ if(!document.documentElement.classList.contains('embed')) startMove(1); };
 addEventListener('keydown',e=>{
+  if(document.documentElement.classList.contains('embed')) return;
   if(e.key==='ArrowRight'||e.key==='ArrowDown')startMove(1);
   else if(e.key==='ArrowLeft'||e.key==='ArrowUp')startMove(-1);
   else if(e.key===' '){e.preventDefault(); setPlay(!playing)}
